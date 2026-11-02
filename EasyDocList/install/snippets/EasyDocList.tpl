@@ -8,6 +8,7 @@
  * @version  0.1.0
  * @license  GNU General Public License (GPL), https://www.gnu.org/licenses/gpl-3.0.html
  * @author   Yu.No (https://github.com/yuno25211415)
+ * @lastupdate 2025/11/26
  * @internal @properties &
  * @internal @modx_category Custom
  * @internal @installset base, sample
@@ -22,7 +23,7 @@
  * @param string &tvPrefix テンプレート変数の接頭辞
  * @param string &outerTpl リストアイテムを囲うHTMLテンプレート
  * @param string &rowTpl リストアイテムのHTMLテンプレート
- * @param string &noResults 1件もないときに表示するHTMLテンプレート
+ * @param string &noResults リソースが見つからなかった場合に出力するHTMLテンプレート
  * @example [[EasyDocList? &parents=`13`]]
  * @example [[EasyDocList? &documents=`13,117`]]
  */
