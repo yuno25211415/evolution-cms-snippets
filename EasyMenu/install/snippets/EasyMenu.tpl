@@ -5,9 +5,10 @@
  * メニューを簡単に作るためのスニペット。
  *
  * @category snippet
- * @version  0.1.0
+ * @version  0.1.1
  * @license  GNU General Public License (GPL), https://www.gnu.org/licenses/gpl-3.0.html
  * @author   Yu.No (https://github.com/yuno25211415)
+ * @lastupdate 2026/03/22
  * @internal @properties &
  * @internal @modx_category Custom
  * @internal @installset base, sample
@@ -29,6 +30,7 @@
  * @param string &openClass 現在位置（カレント）が含まれる親の展開されているクラス名
  * @param string &parentClass 親メニューアイテムのクラス名
  * @param string &rowClass メニューアイテムのクラス名
+ * @param string &noResults リソースが見つからなかった場合に出力するHTMLテンプレート
  * @example [[EasyMenu? &parents=`13`]]
  * @example [[EasyMenu? &documents=`13,117`]]
  */
@@ -52,6 +54,7 @@ if (!isset($openClass)) $openClass = 'open';
 if (!isset($parentClass)) $parentClass = '';
 if (!isset($rowClass)) $rowClass = '';
 if (!isset($noResults)) $noResults = '';
+if (!isset($_level)) $_level = 1; // 階層（内部でスニペットを呼び出す場合に使用される）
 
 if ($maxDepth == 0) return '';
 
@@ -111,7 +114,7 @@ if (!isset($result)) return '';
 $subHtml = '';
 
 // メニューの構築
-foreach ($result as $data) {
+foreach ($result as $i => $data) {
 	if ($ignoreHidden == 1 && $data['hidemenu'] == 1) continue;
 
 	$withSubMenu = false;
@@ -119,6 +122,9 @@ foreach ($result as $data) {
 	$childCount = count($modx->getDocumentChildren($data['id'], 1, 0, 'id'));
 
 	// $modx->addLog('['.$snippetName.'] current id: '.$currentDocId.', this id: '.$data['id'], $data);
+
+	$isCurrent = false;
+	$isOpen    = false;
 
 	// クラス名の設定
 	$classes = [$rowClass];
@@ -128,9 +134,11 @@ foreach ($result as $data) {
 	if ($data['id'] === $currentDocId) {
 		$classes[] = $hereClass;
 		$withSubMenu = true;
+		$isCurrent = true;
 	} else if (in_array($currentDocId, $modx->getChildIds($data['id']))) {
 		$classes[] = $openClass;
 		$withSubMenu = true;
+		$isOpen = true;
 	}
 
 	$classes = array_filter($classes);
@@ -156,17 +164,23 @@ foreach ($result as $data) {
 
 	// プレースホルダーの初期設定
 	$placeholder = array_merge([
-		'id'      => $data['id'],
-		'title'   => $data['pagetitle'],
-		'url'     => $url,
-		'parent'  => $data['parent'],
-		'classes' => count($classes) > 0 ? ' class="'.implode(' ', $classes).'"' : ''
+		'id'         => $data['id'],
+		'number'     => $i + 1,
+		'level'      => $_level,
+		'title'      => $data['pagetitle'],
+		'url'        => $url,
+		'parent'     => $data['parent'],
+		'classes'    => count($classes) > 0 ? ' class="'.implode(' ', $classes).'"' : '',
+		'is_first'   => $i == 0,
+		'is_last'    => $i + 1 == count($result),
+		'is_current' => $isCurrent,
+		'is_open'    => $isOpen
 	], $data, $tvs);
-
-	// evo()->addLog('['.$snippetName.'] プレースホルダー', $placeholder);
 
 	// サブメニューの構築
 	if ($maxDepth == -1 || ($maxDepth > 1 && $childCount > 0)) {
+		$placeholder['sub_count'] = $childCount;
+
 		if ($hideSubMenus == 0 || ($hideSubMenus == 1 && $withSubMenu)) {
 			$placeholder['wrap'] = $modx->runSnippet($modx->getSnippetName(), [
 				'parents'      => $data['id'],
@@ -182,7 +196,8 @@ foreach ($result as $data) {
 				'orderBy'      => $orderBy,
 				'hereClass'    => $hereClass,
 				'openClass'    => $openClass,
-				'parentClass'  => $parentClass
+				'parentClass'  => $parentClass,
+				'_level'       => $_level + 1
 			]);
 		}
 	}
