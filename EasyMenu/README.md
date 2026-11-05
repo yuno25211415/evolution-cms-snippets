@@ -35,6 +35,17 @@
 
 `parents`パラメーターが指定されていた場合はこの`documents`パラメーターが優先される。
 
+### ignoreDocuments
+
+- 初期値: 空
+
+除外するリソースのIDを指定する。
+複数指定する場合はカンマ区切りで指定する。
+
+```html
+[[EasyMenu? &documents=`3` &ignoreDocuments=`1,17`]]
+```
+
 ### where
 
 - 初期値: 空
@@ -69,18 +80,6 @@
 [[EasyMenu? &parents=`3` &publicState=`0`]]
 ```
 
-### hideSubMenus
-
-- 初期値: `0`
-
-現在のページ以外のサブメニューを表示するかどうかを指定する。
-`0`は現在のページの場合のみサブメニューを表示し、`1`はそれに関係なくサブメニューを表示する。
-
-```html
-[[EasyMenu? &parents=`3` &hideSubMenus=`1`]]
-```
-
-
 ### ignoreHidden
 
 - 初期値: `1`
@@ -90,6 +89,28 @@
 
 ```html
 [[EasyMenu? &parents=`3` &ignoreHidden=`0`]]
+```
+
+### hideSubMenus
+
+- 初期値: `0`
+
+全サブメニューを非表示にするかどうかを指定する。
+`0`は全てのサブメニューを表示し、`1`は全てのサブメニューを非表示にする。
+
+```html
+[[EasyMenu? &parents=`3` &hideSubMenus=`1`]]
+```
+
+### showSubMenuOnlyActive
+
+- 初期値: `0`
+
+`hideSubMenus`パラメーターが`1`の時、現在位置（カレント）あるいはサブメニューの何れかが現在位置（カレント）の状態の時のサブメニューを表示するかどうかを指定する。
+`0`は`hideSubMenus`パラメーターに従ってサブメニューを表示または非表示にし、`1`は現在位置（カレント）あるいはサブメニューの何れかが現在位置（カレント）の状態の時にサブメニューを表示します。
+
+```html
+[[EasyMenu? &parents=`3` &hideSubMenus=`1` &showSubMenuOnlyActive=`1`]]
 ```
 
 ### sortBy
@@ -132,6 +153,16 @@
 
 ```html
 [[EasyMenu? &parents=`3` &sortBy=`group,tag`]]
+```
+
+HTMLテンプレート側はプレースホルダー`[+tv.テンプレート変数名+]`で使用することができる。
+
+```html
+[[EasyMenu?
+  &parents=`3`
+  &sortBy=`tag`
+  &rowTpl=`@CODE:<a href="[+url+]"[+classes+]><span class="tag">[+tv.tag+]</span>[+title+]</a>`
+]]
 ```
 
 ### outerTpl
@@ -303,6 +334,16 @@ HTMLコードを直接記述する場合は、先頭に`@CODE:`を指定する�
 [[EasyMenu? &parents=`3` &parentClass=`parent`]]
 ```
 
+### parentHereClass
+
+- 初期値: 空
+
+サブメニューが現在位置（カレント）状態の時の親メニューアイテムのクラス名を指定する。
+
+```html
+[[EasyMenu? &parents=`3` &parentHereClass=`parent-current`]]
+```
+
 ### rowClass
 
 - 初期値: 空
@@ -326,9 +367,29 @@ HTMLコードを直接記述する場合は、先頭に`@CODE:`を指定する�
 [[EasyMenu? &parents=`3` &noResults=`@CODE:<p class="message">見つかりませんでした。</p>`]]
 ```
 
+## プレースホルダー
+
+| プレースホルダー | 説明 |
+|--|--|
+| `[+wrap+]` | 展開されるサブリソース。 |
+| `[+classes+]` | `class`属性付きのクラス名。 |
+| `[+title+]` | リソース変数`pagetitle`。 |
+| `[+url+]` | リソースのルート相対パス。 |
+| `[+id+]` | リソースID。 |
+| `[+parent+]` | 親リソースID。 |
+| `[+number+]` | 階層ごとのメニューアイテムの連番。 |
+| `[+level+]` | 階層番号。 |
+| `[+is_first+]` | 最初のメニューアイテムかどうか。 |
+| `[+is_last+]` | 最後のメニューアイテムかどうか。 |
+| `[+is_current+]` | 現在位置（カレント）かどうか。 |
+| `[+is_open+]` | サブメニューを表示しているかどうか。 |
+| `[+sub_count+]` | サブメニューの数。 |
+| `[+tv.テンプレート変数名+]` | テンプレート変数。<br>`tvList`パラメーターで使用するテンプレート変数を指定する必要がある。 |
+| `[+リソース変数名+]` | リソース変数。 |
+
 ## 動作確認済み
 
 | 項目 | バージョン |
 |--|--|
 | PHP | 8.2 |
-| Evolution CMS | Community Edition 3.1.27<br>Community Edition 3.1.29 |
+| Evolution CMS | Community Edition 3.1.27<br>Community Edition 3.1.29<br>Community Edition 3.1.30 |
