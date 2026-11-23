@@ -5,7 +5,7 @@
  * メニューを簡単に作るためのスニペット。
  *
  * @category snippet
- * @version  0.2.2
+ * @version  0.3.0
  * @license  GNU General Public License (GPL), https://www.gnu.org/licenses/gpl-3.0.html
  * @author   Yu.No (https://github.com/yuno25211415)
  * @lastupdate 2026/11/04
@@ -176,18 +176,19 @@ foreach ($result as $i => $data) {
 
 	// プレースホルダーの初期設定
 	$placeholder = array_merge([
-		'id'         => $data['id'],
-		'number'     => $i + 1,
-		'level'      => $_level,
-		'title'      => $data['pagetitle'],
-		'url'        => $url,
-		'parent'     => $data['parent'],
-		'classes'    => count($classes) > 0 ? ' class="'.implode(' ', $classes).'"' : '',
-		'is_first'   => $i == 0,
-		'is_last'    => $i + 1 == count($result),
-		'is_current' => $isCurrent,
-		'is_open'    => $isOpen,
-		'sub_count'  => $childCount
+		'id'             => $data['id'],
+		'number'         => $i + 1,
+		'level'          => $_level,
+		'title'          => $data['pagetitle'],
+		'url'            => $url,
+		'parent'         => $data['parent'],
+		'classes'        => count($classes) > 0 ? ' class="'.implode(' ', $classes).'"' : '',
+		'is_first'       => $i == 0,
+		'is_last'        => $i + 1 == count($result),
+		'is_current'     => $isCurrent,
+		'is_open'        => $isOpen,
+		'is_sub_current' => $isSubMenuCurrent,
+		'sub_count'      => $childCount
 	], $data, $tvs);
 
 	if ($hasSubMenu) {
